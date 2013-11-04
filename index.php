@@ -1,18 +1,17 @@
 <?php
 
 require 'vendor/autoload.php';
+require_once("config.php");
 
 // Set error reporting
 error_reporting(-1);
 ini_set('display_errors', 'On');
 ini_set('html_errors', 'On');
 
-
 // Prepare app
 $app = new \Slim\Slim(array(
     'templates.path' => 'templates',
 ));
-
 
 // Create monolog logger and store logger in container as singleton
 // (Singleton resources retrieve the same log resource definition each time)
@@ -34,13 +33,11 @@ $app->view->parserOptions = array(
 );
 $app->view->parserExtensions = array(new \Slim\Views\TwigExtension());
 
-
 // Automatically load router files
 $routers = glob('routers/*.router.php');
 foreach ($routers as $router) {
     require $router;
 }
-
 
 // Run app
 $app->run();

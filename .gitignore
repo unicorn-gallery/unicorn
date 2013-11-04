@@ -5,4 +5,5 @@
 !/templates/cache/README.md
 .DS_STORE
 composer.lock
-helpers/config.php
+config.php
+/tokens/*

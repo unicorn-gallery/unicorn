@@ -4,24 +4,25 @@ namespace models;
 
 use lib\Directory;
 use lib\Dropbox;
+use lib\Image;
+use lib\Config;
 
 class Gallery {
 
 	protected $dropbox;
-  private $config;
 
-	function __construct($config) {
-    $this->config = $config;
+	function __construct() {
     $this->dropbox = \lib\Dropbox::getInstance();
 	}
 
   private function clear_cache() {
+    $cache_dir = Config::read("cache_dir");
     // Clear cache
-    if (!isset($this->config["cache_dir"])) {
+    if (!isset($cache_dir)) {
       return;
     }
-    Directory::rrmdir($this->config["cache_dir"]);
-    mkdir($this->config["cache_dir"]);
+    Directory::rrmdir($cache_dir);
+    mkdir($cache_dir);
   }
 
   /**
@@ -46,7 +47,7 @@ class Gallery {
         // echo strtotime($metaPath->modified);
 
         // Create a directory for every album
-        $cache_album_dir = $this->config["cache_dir"] . $metaPath->path;
+        $cache_album_dir = Config::read("cache_dir") . $metaPath->path;
         mkdir($cache_album_dir);
 
         // Get the metadata for gallery albums
@@ -65,7 +66,7 @@ class Gallery {
 
             $cache_picture_name = $cache_album_dir . "/" . $key . ".jpg";
             $this->dropbox->getFile($pic, $cache_picture_name);
-            create_thumbnail($cache_picture_name);
+            Image::create_thumbnail($cache_picture_name);
           } // End store picture
         } // End foreach gallery
       } // End get albums
@@ -86,7 +87,7 @@ class Gallery {
    * Get an array of album names and a thumbnail url for each album
    */
   public function get_albums() {
-    $cache_dir = $this->config["cache_dir"];
+    $cache_dir = Config::read("cache_dir");
     $albums = array();
     foreach ($this->valid_entries($cache_dir) as $album) {
       $thumbs_path = $cache_dir . "/" . $album . "/thumbs";
@@ -94,10 +95,11 @@ class Gallery {
 
       if (empty($entries)) continue;
       $curr_album = array("name" => $album,
-                          "url" => str_replace(' ', '_', $album),
+                          "url" => "album/" . str_replace(' ', '_', $album),
                           "thumb_url" => $thumbs_path . "/" . $entries[0]);
       array_push($albums, $curr_album);
     }
     return $albums;
   }
 }
+?>

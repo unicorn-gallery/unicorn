@@ -1,23 +1,107 @@
-{% extends "base.html" %}
+<html>
+<head>
+
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+    <!-- Enable responsive view on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>{{ gallery_name }}</title>
 
 
-{% block header %}
+    <style type="text/css">
+    body {
+      margin: 0;
+      padding: 0;
+      background: #EEE;
+      font: 10px/13px 'Lucida Sans',sans-serif;
+    }
+    .wrap {
+      overflow: hidden;
+      margin: 10px;
+    }
+    .box {
+      float: left;
+      position: relative;
+      width: 20%;
+      padding-bottom: 20%;
+    }
+    .boxInner {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      top: 10px;
+      bottom: 10px;
+      overflow: hidden;
+    }
+    .boxInner img {
+      width: 100%;
+    }
+    .boxInner .titleBox {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #000;
+      background: rgba(0, 0, 0, 0.5);
+      color: #FFF;
+      padding: 10px;
+      text-align: center;
+    }
+
+    @media only screen and (max-width : 480px) {
+      /* Smartphone view: 1 tile */
+      .box {
+        width: 100%;
+        padding-bottom: 100%;
+      }
+    }
+    @media only screen and (max-width : 650px) and (min-width : 481px) {
+      /* Tablet view: 2 tiles */
+      .box {
+        width: 50%;
+        padding-bottom: 50%;
+      }
+    }
+    @media only screen and (max-width : 1050px) and (min-width : 651px) {
+      /* Small desktop / ipad view: 3 tiles */
+      .box {
+        width: 33.3%;
+        padding-bottom: 33.3%;
+      }
+    }
+    @media only screen and (max-width : 1290px) and (min-width : 1051px) {
+      /* Medium desktop: 4 tiles */
+      .box {
+        width: 25%;
+        padding-bottom: 25%;
+      }
+    }
+  </style>
+  <!-- Enable media queries for old IE -->
+  <!--[if lt IE 9]>
+	<script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+  <![endif]-->
+</head>
+
+<body class="no-touch">
+
 <h1>{{ gallery_name }}</h1>
-{% endblock %}
 
-{% block content%}
+<div class="wrap">
 
-<div class="sixteen colgrid">
-  <div class="row">
-      {% for album in albums %}
-      <div class="four columns album shadow">
+  {% for album in albums %}
+    <div class="box">
+      <div class="boxInner">
         <a href="/{{ album.url }}">
           <img src="{{ album.thumb_url }}" alt="{{ album.name }}"/>
-          {{ album.name }}
         </a>
+        <div class="titleBox">{{ album.name }}</div>
       </div>
-      {% endfor %}
-  </div>
-</div>
+    </div>
+  {% endfor %}
 
-{% endblock %}
+</div>
+</body>
+
+</html>
