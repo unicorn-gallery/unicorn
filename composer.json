@@ -1,0 +1,22 @@
+{
+    "name": "mre/unicorn",
+    "description": "A Dropbox gallery for your website",
+    "keywords": ["gallery", "dropbox", "template"],
+    "homepage": "http://github.com/mre/unicorn",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mattias Endler",
+            "email": "matthias-endler@gmx.net",
+            "homepage": "http://www.matthias-endler.de"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.1",
+        "benthedesigner/dropbox": "dev-master",
+        "monolog/monolog": "~1.6",
+        "slim/slim": "~2.3",
+        "slim/views": "0.*",
+        "twig/twig": "~1.13"
+    }
+}

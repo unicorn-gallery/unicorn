@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+
+{% block header %}
+<h1>{{ gallery_name }}</h1>
+{% endblock %}
+
+{% block content%}
+
+<div class="sixteen colgrid">
+  <div class="row">
+      {% for album in albums %}
+      <div class="four columns album shadow">
+        <a href="/{{ album.url }}">
+          <img src="{{ album.thumb_url }}" alt="{{ album.name }}"/>
+          {{ album.name }}
+        </a>
+      </div>
+      {% endfor %}
+  </div>
+</div>
+
+{% endblock %}
