@@ -33,10 +33,22 @@ $app->view->parserOptions = array(
 );
 $app->view->parserExtensions = array(new \Slim\Views\TwigExtension());
 
+
+// Set application-wide route conditions for URL parameters
+\Slim\Route::setDefaultConditions(array(
+    // Album name is alphanumeric with underscores instead
+    // of spaces.
+    'album' => '[_a-zA-Z0-9]{1,}',
+    // Image filenames consist of a name and an extension
+    // separated by a dot.
+    'image' => '[a-zA-Z0-9]+\.[a-zA-Z_]{3,4}'
+));
+
+
 // Automatically load router files
-$routers = glob('routers/*.router.php');
-foreach ($routers as $router) {
-    require $router;
+$routes = glob('routes/*.router.php');
+foreach ($routes as $route) {
+    require $route;
 }
 
 // Run app

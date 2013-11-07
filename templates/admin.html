@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 
-{% block header %}
-<h1>{{ gallery_name }} &ndash; dasboard</h1>
-{% endblock %}
-
 {% block content%}
-<div class="twelve columns">
-  <p>
-    {{ description }}
-  </p>
-  <form action = "" method = "post">
-    <div class="xlarge primary btn">
-        <button type="submit" name="refresh">
-            <i class="icon-arrows-ccw"></i> Refresh Gallery
-        </button>
-    </div>
-  </form>
-</div>
-
+    {% if refreshed is defined %}
+      <p>
+      We've refreshed the gallery. <a href="/">Enjoy!</a>
+      </p>
+    {% else %}
+      <p>
+        When you click on the big button below, all new gallery pictures will be fetched from Dropbox.<br />
+        Do this every time you add pictures to your gallery. That's it.
+      </p>
+      <form action = "" method = "post">
+        <div class="xlarge primary btn">
+            <button type="submit" name="refresh">
+                <i class="icon-arrows-ccw"></i> Refresh Gallery
+            </button>
+        </div>
+      </form>
+    {% endif %}
 {% endblock %}

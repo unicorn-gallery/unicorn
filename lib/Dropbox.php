@@ -2,9 +2,15 @@
 
 namespace lib;
 
+use lib\Directory;
+use lib\File;
+use lib\Config;
+
 class Dropbox {
 
     private static $instance;
+    private $cursor_file;
+    private $cursor;
     public $api;
 
     private function __construct() {
@@ -31,10 +37,11 @@ class Dropbox {
       // Create the consumer and API objects
       $OAuth = new \Dropbox\OAuth\Consumer\Curl(Config::read("key"), Config::read("secret"), $storage, $callback);
 
-      $api = new \Dropbox\API($OAuth);
+      $this->api = new \Dropbox\API($OAuth);
+
     }
 
-    public static function getInstance() {
+    public static function get_instance() {
         if (!isset(self::$instance))
         {
             $object = __CLASS__;

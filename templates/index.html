@@ -1,107 +1,40 @@
-<html>
-<head>
+{% extends "base.html" %}
 
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-
-    <!-- Enable responsive view on mobile devices -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <title>{{ gallery_name }}</title>
-
-
-    <style type="text/css">
-    body {
-      margin: 0;
-      padding: 0;
-      background: #EEE;
-      font: 10px/13px 'Lucida Sans',sans-serif;
-    }
-    .wrap {
-      overflow: hidden;
-      margin: 10px;
-    }
-    .box {
-      float: left;
-      position: relative;
-      width: 20%;
-      padding-bottom: 20%;
-    }
-    .boxInner {
-      position: absolute;
-      left: 10px;
-      right: 10px;
-      top: 10px;
-      bottom: 10px;
-      overflow: hidden;
-    }
-    .boxInner img {
-      width: 100%;
-    }
-    .boxInner .titleBox {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: #000;
-      background: rgba(0, 0, 0, 0.5);
-      color: #FFF;
-      padding: 10px;
-      text-align: center;
-    }
-
-    @media only screen and (max-width : 480px) {
-      /* Smartphone view: 1 tile */
-      .box {
-        width: 100%;
-        padding-bottom: 100%;
-      }
-    }
-    @media only screen and (max-width : 650px) and (min-width : 481px) {
-      /* Tablet view: 2 tiles */
-      .box {
-        width: 50%;
-        padding-bottom: 50%;
-      }
-    }
-    @media only screen and (max-width : 1050px) and (min-width : 651px) {
-      /* Small desktop / ipad view: 3 tiles */
-      .box {
-        width: 33.3%;
-        padding-bottom: 33.3%;
-      }
-    }
-    @media only screen and (max-width : 1290px) and (min-width : 1051px) {
-      /* Medium desktop: 4 tiles */
-      .box {
-        width: 25%;
-        padding-bottom: 25%;
-      }
-    }
-  </style>
+{% block head_includes %}
+  <link rel="stylesheet" href="../assets/css/swipebox.css">
   <!-- Enable media queries for old IE -->
   <!--[if lt IE 9]>
 	<script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
   <![endif]-->
-</head>
 
-<body class="no-touch">
+  <script src="../assets/js/ios-orientationchange-fix.js"></script>
+  <script src="../assets/js/jquery-2.0.3.min.js"></script>
+  <script src="../assets/js/jquery.swipebox.js"></script>
 
-<h1>{{ gallery_name }}</h1>
+  <script type="text/javascript">
+      jQuery(function($) {
+        $(".swipebox").swipebox({
+          hideBarsDelay : 0, // 0 to always show caption and action bar
+        });
+      });
+  </script>
+{% endblock %}
 
-<div class="wrap">
 
-  {% for album in albums %}
+
+{% block content %}
+  {% for entry in entries %}
     <div class="box">
-      <div class="boxInner">
-        <a href="/{{ album.url }}">
-          <img src="{{ album.thumb_url }}" alt="{{ album.name }}"/>
+      <div class="boxInner imgBorder">
+        <a href="{{ entry.url }}" title={{ entry.name }}
+          {% if lightbox is defined %}
+            class="swipebox"
+          {% endif %}
+          >
+          <img src="{{ entry.thumb_url }}" alt="{{ entry.name }}"/>
         </a>
-        <div class="titleBox">{{ album.name }}</div>
+        <div class="titleBox">{{ entry.name }}</div>
       </div>
     </div>
   {% endfor %}
-
-</div>
-</body>
-
-</html>
+{% endblock %}

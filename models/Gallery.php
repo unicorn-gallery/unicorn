@@ -3,6 +3,7 @@
 namespace models;
 
 use lib\Directory;
+use lib\File;
 use lib\Dropbox;
 use lib\Image;
 use lib\Config;
@@ -10,75 +11,70 @@ use lib\Config;
 class Gallery {
 
 	protected $dropbox;
+  private static $thumbs_dir = "thumbs";
 
 	function __construct() {
-    $this->dropbox = \lib\Dropbox::getInstance();
+    $this->dropbox = \lib\Dropbox::get_instance();
 	}
 
-  private function clear_cache() {
-    $cache_dir = Config::read("cache_dir");
-    // Clear cache
-    if (!isset($cache_dir)) {
-      return;
-    }
-    Directory::rrmdir($cache_dir);
-    mkdir($cache_dir);
-  }
 
-  /**
-   * Use the Dropbox API to cache the gallery.
-   * Every image will be stored inside the cache directory
-   * This increases loading speed significantly.
-   */
   public function refresh_cache() {
-
-    $this->clear_cache();
-
-    // Get the metadata for the gallery folder
-    $metaData = $this->dropbox->metaData('/');
-
-    // List gallery contents
-    foreach ($metaData["body"]->contents as $metaPath) {
-
-      // Get albums
-      if ($metaPath->is_dir) {
-
-        // TODO: Check if album is already in cache (delta api)
-        // echo strtotime($metaPath->modified);
-
-        // Create a directory for every album
-        $cache_album_dir = Config::read("cache_dir") . $metaPath->path;
-        mkdir($cache_album_dir);
-
-        // Get the metadata for gallery albums
-        $metaAlbum = $this->dropbox->metaData($metaPath->path);
-
-        // Get pictures in album
-        foreach ($metaAlbum["body"]->contents as $key=>$metaPic) {
-
-          // Store every picture with its thumbnail inside a cache
-          if ($metaPic->thumb_exists) {
-            $pic = $metaPic->path;
-
-            // Store thumbnail provided by Dropbox
-            //$thumb = $dropbox->thumbnails($pic, "JPEG", "m");
-            //file_put_contents("test_thumb.jpg", $thumb["data"]);
-
-            $cache_picture_name = $cache_album_dir . "/" . $key . ".jpg";
-            $this->dropbox->getFile($pic, $cache_picture_name);
-            Image::create_thumbnail($cache_picture_name);
-          } // End store picture
-        } // End foreach gallery
-      } // End get albums
-    } // End list gallery contents
+    $this->dropbox->refresh_cache();
   }
 
-  private function valid_entries($dir, $filters = array(".", "..")) {
+  private function valid_entries($dir, $exclude_dirs = False, $filters = array(".", "..")) {
     if (!is_dir($dir)) return array();
     $entries = array();
     foreach (scandir($dir) as $entry) {
+      if ($exclude_dirs && is_dir($dir . "/" . $entry)) continue;
       if (in_array($entry, $filters)) continue;
       array_push($entries, $entry);
+    }
+    return $entries;
+  }
+
+  private function get_cache_path() {
+    $cache_url = Config::read("cache_dir");
+    return Directory::server_path($cache_url);
+  }
+
+  private function get_album_url($album) {
+    $cache_url = $this->get_cache_path();
+    return $cache_url . "/" . $album;
+  }
+
+  private function get_image_url($album, $image) {
+    $album_url = $this->get_album_url($album);
+    return $album_url . "/" . $image;
+  }
+
+  /**
+   * Return the public path to an image thumbnail
+   */
+  private function get_thumb_url($album, $img = False) {
+    $album_url = $this->get_album_url($album);
+    $thumbs_url = $album_url . "/" . self::$thumbs_dir;
+    if (!$img) {
+      // Get the absolute path to the thumbnail
+      $dir = Config::read("cache_dir") . "/" . $album . "/" . self::$thumbs_dir;
+      $thumbs = $this->valid_entries($dir);
+      if (empty($thumbs)) return False;
+      $img = $thumbs[0];
+    }
+    return $thumbs_url . "/" . $img;
+  }
+
+  /**
+   * Get an album
+   */
+  public function get_album($album_name) {
+    $dir = Config::read("cache_dir") . "/" . $album_name;
+    $entries = array();
+    foreach ($this->valid_entries($dir, True) as $entry) {
+      $curr_entry = array("name" => File::remove_extension($entry),
+                          "url" => $this->get_image_url($album_name, $entry),
+                          "thumb_url" => $this->get_thumb_url($album_name, $entry));
+      array_push($entries, $curr_entry);
     }
     return $entries;
   }
@@ -87,19 +83,18 @@ class Gallery {
    * Get an array of album names and a thumbnail url for each album
    */
   public function get_albums() {
-    $cache_dir = Config::read("cache_dir");
-    $albums = array();
-    foreach ($this->valid_entries($cache_dir) as $album) {
-      $thumbs_path = $cache_dir . "/" . $album . "/thumbs";
-      $entries = $this->valid_entries($thumbs_path);
+    $dir = Config::read("cache_dir");
+    $entries = array();
+    foreach ($this->valid_entries($dir) as $entry) {
+      $thumb_url = $this->get_thumb_url($entry);
+      if (!$thumb_url) continue;
 
-      if (empty($entries)) continue;
-      $curr_album = array("name" => $album,
-                          "url" => "album/" . str_replace(' ', '_', $album),
-                          "thumb_url" => $thumbs_path . "/" . $entries[0]);
-      array_push($albums, $curr_album);
+      $curr_entry = array("name" => $entry,
+                          "url" => $this->get_album_url($entry),
+                          "thumb_url" => $thumb_url);
+      array_push($entries, $curr_entry);
     }
-    return $albums;
+    return $entries;
   }
 }
 ?>
