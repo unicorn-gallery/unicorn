@@ -30,13 +30,27 @@ class Directory {
         return True;
     }
 
-  public static function server_path($path) {
-    $root = Config::read("root_path");
-    if (substr($path, 0, strlen($root)) == $root) {
-        $path = substr($path, strlen($root));
+    /**
+     * Get the public root of the server
+     */
+    public static function server_path($path) {
+      $root = Config::read("root_path");
+      if (substr($path, 0, strlen($root)) == $root) {
+          $path = substr($path, strlen($root));
+      }
+      return $path;
     }
-    return $path;
-  }
+
+    public static function valid_entries($dir, $exclude_dirs = False, $filters = array(".", "..")) {
+      if (!is_dir($dir)) return array();
+      $entries = array();
+      foreach (scandir($dir) as $entry) {
+        if ($exclude_dirs && is_dir($dir . "/" . $entry)) continue;
+        if (in_array($entry, $filters)) continue;
+        array_push($entries, $entry);
+      }
+      return $entries;
+    }
 }
 
 ?>
