@@ -4,18 +4,17 @@ unicorn
 A Dropbox gallery for your website.
 
 * Host your own your pictures on your own site
-* Rocket fast using local caching. (Serve images locally, don't query
-  Dropbox all the time)
+* Rocket fast, local caching.
 * Custom templates
-* Automatic, realtime and fast updates using Delta API. Just drop your images
-  into a local folder and off you go.
+* Automatic, realtime updates using Delta API.
 
 Setup
 -----
 
 1. Due to Dropbox restrictions I'm not allowed to share my application
-   key. So you have to [create a new Dropbox app](https://www.dropbox.com/developers/apps)
-   and put the keys into `config.php`.
+   key. [Create a new Dropbox app](https://www.dropbox.com/developers/apps/create)
+   with the settings in the screenshot and put the keys into `config.php`.
+   ![Dropbox App settings](https://raw.github.com/mre/unicorn/master/assets/img/create_app.png)
 
 2. Run `composer install` inside the unicorn folder to install all dependencies.
 
