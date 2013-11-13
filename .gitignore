@@ -2,9 +2,11 @@
 /logs/*
 !/logs/README.md
 /cache/*
+!/cache/.gitignore
 .DS_STORE
 composer.lock
 config.php
 !lib/Config.php
 /data/*
+!/data/.gitignore
 /tokens/*
