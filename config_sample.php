@@ -22,15 +22,21 @@ Config::write("storage_object_dir", __DIR__ . "/data");
 
 // In order to improve page speed, all images get cached.
 // We need a directory to put the images into.
-// Most likely you might not need to change this setting.
+// Most likely you don't need to change this setting.
 // This directory must be publicly accessible.
 Config::write("cache_dir", __DIR__ . "/cache");
 
 // You can also specify the update frequency of the cache.
-// By default we refresh the cache all five minutes (300s).
+// By default we refresh the cache after five minutes (300s).
 Config::write("cache_update_after", 300);
 
-// Constant with absolute path to the root. Do not change.
-Config::write("root_path", __DIR__);
+// Template and asset directories.
+// Only change if you know what you are doing.
+Config::write("template_dir", __DIR__ . "/templates");
+Config::write("asset_dir", __DIR__ . "/assets");
+
+// Constant with absolute path to the public-facing root of the server.
+// Don't change.
+Config::write("root_path", $_SERVER['DOCUMENT_ROOT']);
 
 ?>
