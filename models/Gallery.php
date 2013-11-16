@@ -35,7 +35,7 @@ class Gallery {
    * Get album route url
    */
   private function get_album_url($album) {
-    return Server::page_url() . "/" . File::encode($album);
+    return Directory::page_url() . "/" . File::encode($album);
   }
 
   private function get_image_path($album, $image) {

@@ -41,6 +41,10 @@ class Directory {
       return $path;
     }
 
+    public static function page_url() {
+      return substr($_SERVER["SCRIPT_NAME"],strrpos($_SERVER["SCRIPT_NAME"],"/")+1);
+    }
+
     public static function valid_entries($dir, $exclude_dirs = False, $filters = array(".", "..")) {
       if (!is_dir($dir)) return array();
       $entries = array();
