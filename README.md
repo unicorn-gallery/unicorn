@@ -13,7 +13,8 @@ Setup
 
 1. Due to Dropbox restrictions I'm not allowed to share my application
    key. [Create a new Dropbox app](https://www.dropbox.com/developers/apps/create)
-   with the settings in the screenshot and put the keys into `config.php`.
+   with the settings in the screenshot and put the keys into `config_sample.php`.
+   Afterwards rename `config_sample.php` to `config.php` to activate it.
    ![Dropbox App settings](https://raw.github.com/mre/unicorn/master/assets/img/create_app.png)
 
 2. Run `composer install` inside the unicorn folder to install all dependencies.
@@ -33,6 +34,25 @@ Customization / Themes
 
 The gallery uses Twig and is fully customizable via html and css.
 Look into `templates` for inspiration.
+
+Troubleshooting
+---------------
+
+### What if my pictures don't show up?
+
+By default, the gallery is updated every five minutes. This is a tradeoff
+between Dropbox API restrictions and keeping the gallery up-to-date.
+You can set the gallery to update more frequently in the config file, but this is
+discouraged.
+
+After uploading unicorn to the server, make sure that all directories are writeable by unicorn.
+Otherwise the pictures can not be cached and won't show up.
+
+Some hosters don't allow long running background processes (longer than 30 seconds or so).
+If your pictures don't show up in the gallery, the update process might have
+been terminated by the server. Try adding only a few albums at a time to work
+around this issue.
+
 
 Copyright
 ---------
