@@ -33,12 +33,12 @@ class Directory {
     /**
      * Get the public root of the server
      */
-    public static function server_path($path) {
+    public static function path_from_server_root($path) {
       $root = Config::read("root_path");
       if (substr($path, 0, strlen($root)) == $root) {
           $path = substr($path, strlen($root));
       }
-      return $path;
+      return "/" . $path;
     }
 
     public static function page_url() {

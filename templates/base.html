@@ -1,25 +1,108 @@
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="description" content="The K√∂rts - Classic Rock" />
+	<meta name="keywords" content="Coverband, Vorbach, Pullenreuth, Immenreuth,
+		Kemnath, Classic Rock, Classical Rock, Oberpfalz, Bayern, Landkreis Tirschenreuth" />
+	<meta name="language" content="de" />
+	<meta name="robots" content="index,follow" />
+	<meta name="author" content="ebit systems" />
+	<meta name="abstract" content="The Körts Classic Rock und Blues" />
+	<meta name="copyright" content="ebit Systems GbR" />
+	<meta name="revisit-After" content="20 days" />
+	<meta name="distribution" content="global" />
 
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-
+	<title>The K&ouml;rts - Classic Rock</title>
   <!-- Enable responsive view on mobile devices -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>{{ gallery_name }}</title>
+	<link rel="icon" href="/favicon.ico" type="image/ico" />
+	<link rel="stylesheet" type="text/css" href="/inc/master.css" />
+	<link rel="stylesheet" type="text/css" href="/inc/custom.css" />
+  <link rel="stylesheet" href="../inc/fancybox/jquery.fancybox-1.3.4.css" type="text/css" media="screen" />
 
-
-  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="{{assets}}/css/style.css">
 
   {% block head_includes %}
   {% endblock %}
-
+	<!--[if lt IE 7]>
+		<link rel="stylesheet" type="text/css" href="../inc/ie.css" />
+	<![endif]-->
 </head>
 
 <body class="no-touch">
+	<!-- Ajax Loader -->
+	<div id="overlay"></div>
+
+
+	<div id="bg_header">
+		<div id="bg_menubar">
+		</div>
+		<div id="spacer"></div>
+	</div>
+
+	<div class="center">
+
+		<!-- Clickable area for logo -->
+		<a class="homelink" id="logo" href="/home"></a>
+		<ul id="menu">
+			<li><a id="home" href="/home">Home</a></li>
+			<li><a id="band" href="/band">Band</a></li>
+			<li><a id="media" href="/tour">Tour</a></li>
+			<li><a id="auftritte" href="/galerie">Galerie</a></li>
+			<li><a id="kontakt" href="/kontakt">Kontakt</a></li>
+		</ul>
+
+		<div id="content">
 
   {% block content %}
   {% endblock %}
 
+			</div><!-- Site identifier -->
+      <div class="clear"></div>
+		</div>
+	</div>
+	
+	<div id="footer">
+		<div class="center">
+			<a href="http://www.ebit-systems.de" class="noBorder"><img src="/img/ebit.jpg" align="middle" alt="ebit logo" /></a>
+			<a href="/creamy.php" class="noBorder"><img src="/img/creamy.jpg" align="middle" alt="creamy logo" /></a>
+			&copy; The K&ouml;rts &mdash; Alle Rechte vorbehalten
+			<span id="footerlinks">
+			<a href="/home" class="first">Home</a>
+			<a href="/band">Band</a>
+			<a href="/musik">Musik</a>
+			<a href="/auftritte">Auftritte</a>
+			<a href="/kontakt">Kontakt</a>
+			<a href="/impressum">Impressum</a>
+			</span>
+		</div>
+	</div>
+	
+<script type="text/javascript" src="/inc/jquery.js"></script>
+<script type="text/javascript" src="/inc/jquery_color.js"></script>
+<script type="text/javascript" src="/inc/jquery_easing.js"></script>
+<script type="text/javascript" src="/inc/jquery_cycle.js"></script>
+<script type="text/javascript" src="/inc/jquery_validate.js"></script>
+<script type="text/javascript" src="/inc/jquery_validate_de.js"></script>
+<script type="text/javascript" src="/inc/jquery.nivo.slider.pack.js"></script>
+<script type="text/javascript" src="/inc/custom.js"></script>
+<script type="text/javascript" src="/inc/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+<script type="text/javascript">
+
+$(document).ready(function() {
+	/* Apply fancybox to multiple items */
+	
+  $("a.fancy").fancybox({
+		'transitionIn':	'elastic',
+		'transitionOut':	'elastic',
+		'speedIn':	600, 
+		'speedOut':	200, 
+		'overlayShow':	false
+	});
+});
+
+</script>
 </body>
 </html>

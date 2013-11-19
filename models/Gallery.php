@@ -20,7 +20,7 @@ class Gallery {
 
   private function get_cache_path() {
     $cache_url = Config::read("cache_dir");
-    return Directory::server_path($cache_url);
+    return Directory::path_from_server_root($cache_url);
   }
 
   /**
@@ -35,7 +35,7 @@ class Gallery {
    * Get album route url
    */
   private function get_album_url($album) {
-    return Directory::page_url() . "/" . File::encode($album);
+    return Directory::page_url() . "/" . rawurlencode($album);
   }
 
   private function get_image_path($album, $image) {
@@ -63,11 +63,11 @@ class Gallery {
    * Get an album
    */
   public function get_album($album_name) {
-    $album_name = File::decode($album_name);
+    $album_name = rawurldecode($album_name);
     $dir = Config::read("cache_dir") . "/" . $album_name;
     $entries = array();
     foreach (Directory::valid_entries($dir, True) as $entry) {
-      $name = File::decode(File::remove_extension($entry));
+      $name = rawurldecode(File::remove_extension($entry));
       $curr_entry = array("name" => $name,
                           "url" => $this->get_image_path($album_name, $entry),
                           "thumb_url" => $this->get_thumb_url($album_name, $entry));
@@ -86,7 +86,7 @@ class Gallery {
       $thumb_url = $this->get_thumb_url($entry);
       if (!$thumb_url) continue;
 
-      $name = File::decode($entry);
+      $name = rawurldecode($entry);
       $curr_entry = array("name" => $name,
                           "url" => $this->get_album_url($entry),
                           "thumb_url" => $thumb_url);

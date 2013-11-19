@@ -5,17 +5,28 @@ namespace lib;
 use lib\Dropbox;
 use lib\File;
 use lib\Config;
+use lib\Lock;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
 class Cache {
 
+    private $dropbox;
     private $cursor_file;
-    private $api;
+    private $cursor;
+    private $max_update_time;
 
     public function __construct() {
       $this->dropbox = Dropbox::get_instance();
       $this->cursor_file = Config::read("storage_object_dir") . "/user.cursor";
       $this->cursor = $this->read_cursor();
+      $this->max_update_time = 300;
+
+      $logfile = Config::read('logfile');
+      $this->log = new Logger('applog');
+      $this->log->pushHandler(new StreamHandler($logfile, Logger::DEBUG));
     }
+
     /**
      * Returns the current "state" of the cache
      * in form of a Dropbox cursor for the delta API
@@ -36,16 +47,13 @@ class Cache {
     }
 
     public function is_up_to_date() {
-      if (!file_exists($this->cursor_file)) {
+      $age = File::age($this->cursor_file);
+      if ($age < 0) {
+        // File does not exist
         return False;
       }
-
-      $fmtime = filemtime($this->cursor_file);
-      $currtime = date("U");
-      $delta = $currtime - $fmtime;
-
       $update_after = Config::read("cache_update_after");
-      if ($delta > $update_after) {
+      if ($age > $update_after) {
         return False;
       }
       return True;
@@ -79,9 +87,16 @@ class Cache {
 
       // Do we need to check for updates?
       if ($this->is_up_to_date() && !$force_update) {
-        return;
+        return False;
       }
 
+      if (!Lock::get_lock("update")) {
+        // Another process is updating the cache
+        return False;
+      }
+      $this->log->addDebug("Refreshing cache");
+
+      // Purge the cache?
       if ($purge) {
         $this->clear();
         $this->cursor = $this->read_cursor();
@@ -91,49 +106,63 @@ class Cache {
       $request = $this->dropbox->api->delta($this->cursor);
       $changes = $request["body"];
 
-      // Did we receive a command to purge the cache?
+      // Did Dropbox tell us to reset the cache?
+      // (Only clear cache if we did not purge it before.)
       if (!$purge && $changes->reset) {
-        // Only clear cache if we did not purge it before.
         $this->clear();
       }
 
+      // Write all changes until we're done
       do {
-        $entries = $changes->entries;
-        foreach ($entries as $entry) {
-          $this->write_entry($entry);
+        $this->write_entries($changes);
+        // Get changes
+        if (!$changes->has_more) {
+          break;
         }
-        // Refresh cursor
-        $this->cursor = $changes->cursor;
+        $request = $this->dropbox->api->delta($this->cursor);
+        $changes = $request["body"];
+      } while (True);
 
-      // Get all changes until we're done
-      } while ($changes->has_more);
+      Lock::release_lock("update");
+      $this->log->addDebug("Finished refreshing cache");
+      return True;
+    }
 
+    private function write_entries($changes) {
+      $entries = $changes->entries;
+      foreach ($entries as $entry) {
+        $this->write_entry($entry);
+      }
+      // Refresh cursor
+      $this->cursor = $changes->cursor;
       // Save current status
+      // In case of an interruption we can
+      // simply go from here.
       $this->write_cursor($this->cursor);
     }
 
-  private function write_entry($entry) {
-    if (sizeof($entry) < 1) {
-      // Something's wrong with this entry. Skip.
-      return;
-    }
-    $metadata = $entry[1];
-    if ($metadata->is_dir) {
-      // Don't write albums, only images.
-      return;
-    }
-    $dirname = File::sanitize(dirname($metadata->path));
-    $basename = File::remove_extension(basename($metadata->path));
-    $basename = File::sanitize($basename);
-    $local_path = Config::read("cache_dir") . "/" . $dirname . "/" . $basename;
+    private function write_entry($entry) {
+      if (sizeof($entry) < 1) {
+        // Something's wrong with this entry. Skip.
+        return;
+      }
+      $metadata = $entry[1];
+      if ($metadata->is_dir) {
+        // Don't write albums, only images.
+        return;
+      }
+      $dirname = File::sanitize(dirname($metadata->path));
+      $basename = basename($metadata->path);
+      $basename = File::sanitize($basename);
+      $local_path = Config::read("cache_dir") . "/" . $dirname . "/" . $basename;
 
-    // Check if dir already exists. Create if not.
-    Directory::rmkdir($local_path);
+      // Check if dir already exists. Create if not.
+      Directory::rmkdir($local_path);
 
-    $api = Dropbox::get_instance();
-    $outfile = $this->dropbox->api->getFile($metadata->path);
-    File::write($local_path, $outfile["data"]);
-    Image::create_thumbnail($local_path);
-  }
+      $api = Dropbox::get_instance();
+      $outfile = $this->dropbox->api->getFile($metadata->path);
+      File::write($local_path, $outfile["data"]);
+      Image::create_thumbnail($local_path);
+    }
 }
 

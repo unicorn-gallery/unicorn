@@ -50,14 +50,6 @@ class File {
     return preg_replace("/\\.[^.\\s]{3,4}$/", "", $filename);
   }
 
-  public static function encode($str) {
-    return str_replace(" ", "_", $str);
-  }
-
-  public static function decode($str) {
-    return str_replace("_", " ", $str);
-  }
-
   /**
    *
    * Function: sanitize
@@ -73,7 +65,7 @@ class File {
     $strip = array( "~", "`", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "=",
                     "+", "[", "{", "]", "}", "\\", "|", ";", ":", "\"", "'", "&#8216;",
                     "&#8217;", "&#8220;", "&#8221;", "&#8211;", "&#8212;",
-                    "â€”", "â€“", ",", "<", ".", ">", "/", "?");
+                    "â€”", "â€“", ",", "<", ">", "/", "?");
       $clean = trim(str_replace($strip, "", strip_tags($string)));
       $clean = preg_replace('/\s+/', "_", $clean);
       $clean = ($anal) ? preg_replace("/[^a-zA-Z0-9]/", "", $clean) : $clean ;
@@ -82,6 +74,16 @@ class File {
               mb_strtolower($clean, 'UTF-8') :
               strtolower($clean) :
           $clean;
+  }
+
+  public static function age($path) {
+      if (!file_exists($path)) {
+        return -1;
+      }
+      $fmtime = filemtime($path);
+      $currtime = date("U");
+      $delta = $currtime - $fmtime;
+      return $delta;
   }
 
 

@@ -3,22 +3,31 @@
 require 'vendor/autoload.php';
 require_once("config.php");
 
+use lib\Config;
+
 // Set error reporting
 error_reporting(-1);
 ini_set('display_errors', 'On');
 ini_set('html_errors', 'On');
 
 // Prepare app
+$template_dir = Config::read('template_dir');
 $app = new \Slim\Slim(array(
-    'templates.path' => 'templates',
+  'templates.path' => $template_dir,
+  'debug' => false // Don't prettyprint exceptions
 ));
+// Show unformatted exceptions
+$app->error(function ( Exception $e ) use ($app) {
+    echo "error : " . $e;
+});
 
 // Create monolog logger and store logger in container as singleton
 // (Singleton resources retrieve the same log resource definition each time)
+$logfile = Config::read('logfile');
 $app->container->singleton('log', function () {
-    $log = new \Monolog\Logger('slim-skeleton');
+    $log = new \Monolog\Logger('applog');
     $log->pushHandler(new \Monolog\Handler\StreamHandler(
-      'logs/app.log', \Psr\Log\LogLevel::DEBUG));
+      $logfile, \Psr\Log\LogLevel::DEBUG));
     return $log;
 });
 
@@ -26,24 +35,12 @@ $app->container->singleton('log', function () {
 $app->view(new \Slim\Views\Twig());
 $app->view->parserOptions = array(
     'charset' => 'utf-8',
-    'cache' => realpath('../templates/cache'),
+    'cache' => realpath('templates/cache'),
     'auto_reload' => true,
     'strict_variables' => false,
     'autoescape' => true
 );
 $app->view->parserExtensions = array(new \Slim\Views\TwigExtension());
-
-
-// Set application-wide route conditions for URL parameters
-\Slim\Route::setDefaultConditions(array(
-    // Album name is alphanumeric with underscores instead
-    // of spaces.
-    'album' => '[_a-zA-Z0-9]{1,}',
-    // Image filenames consist of a name and an extension
-    // separated by a dot.
-    'image' => '[a-zA-Z0-9]+\.[a-zA-Z_]{3,4}'
-));
-
 
 // Automatically load router files
 $routes = glob('routes/*.router.php');
@@ -55,3 +52,4 @@ foreach ($routes as $route) {
 $app->run();
 
 ?>
+

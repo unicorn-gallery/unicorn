@@ -17,7 +17,8 @@
         "monolog/monolog": "~1.6",
         "slim/slim": "~2.3",
         "slim/views": "0.*",
-        "twig/twig": "~1.13"
+        "twig/twig": "~1.13",
+        "braincrafted/background-process": "dev-master"
     },
     "autoload":{
         "psr-0":{
