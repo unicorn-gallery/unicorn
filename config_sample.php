@@ -30,10 +30,11 @@ Config::write("cache_dir", __DIR__ . "/cache");
 // By default we refresh the cache after five minutes (300s).
 Config::write("cache_update_after", 300);
 
-// Template and asset directories.
+// Template, asset and logfile directories.
 // Only change if you know what you are doing.
 Config::write("template_dir", __DIR__ . "/templates");
 Config::write("asset_dir", __DIR__ . "/assets");
+Config::write("logfile", __DIR__ . "/logs/logfile.txt");
 
 // Constant with absolute path to the public-facing root of the server.
 // Don't change.
