@@ -1,6 +1,11 @@
 unicorn
 =======
 
+
+WARNING: As of today, this project does not work anymore. We need to move to version 2 of the Dropbox API. See the issue [here](https://github.com/mre/unicorn/issues/2).
+
+
+
 A Dropbox gallery for your website.
 
 * Host your own your pictures on your own site
