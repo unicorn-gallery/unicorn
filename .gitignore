@@ -10,3 +10,4 @@ config.php
 /data/*
 !/data/.gitignore
 /tokens/*
+/.idea

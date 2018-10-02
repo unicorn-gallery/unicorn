@@ -2,6 +2,7 @@
 
 use models\Gallery;
 use lib\Config;
+use lib\Cache;
 
 $app->get('/', function () use ($app) {
   $gallery = new Gallery();

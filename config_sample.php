@@ -9,6 +9,7 @@ Config::write("gallery_name", "unicorn gallery");
 // Set your consumer key, secret and callback URL
 Config::write("key", "xxxxxxxxxxxxxxx");
 Config::write("secret", "xxxxxxxxxxxxxxx");
+Config::write("access_token", "xxxxxxxxxxxxxxx");
 
 // Instantiate the Encrypter, passing it a 32-byte key
 Config::write("encrypter_key", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
