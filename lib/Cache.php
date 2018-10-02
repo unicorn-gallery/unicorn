@@ -78,61 +78,52 @@ class Cache {
     public function refresh($force_update = False, $purge = False) {
 
       // Do we need to check for updates?
-      if ($this->is_up_to_date() && !$force_update) {
+      /*if ($this->is_up_to_date() && !$force_update) {
         return;
-      }
+      }*/
 
       if ($purge) {
         $this->clear();
         $this->cursor = $this->read_cursor();
       }
 
-      // Get changes
-      $request = $this->dropbox->api->delta($this->cursor);
-      $changes = $request["body"];
-
-      // Did we receive a command to purge the cache?
-      if (!$purge && $changes->reset) {
-        // Only clear cache if we did not purge it before.
-        $this->clear();
-      }
+      // Get changes 
+      if ($this->cursor) {
+		  $changes = $this->dropbox->api->listFolderContinue($this->cursor);
+	  } else {
+		  $changes = $this->dropbox->api->listFolder('/', array("recursive" => true));
+	  }
 
       do {
-        $entries = $changes->entries;
+        $entries = $changes->getItems();
         foreach ($entries as $entry) {
           $this->write_entry($entry);
         }
         // Refresh cursor
-        $this->cursor = $changes->cursor;
+        $this->cursor = $changes->getCursor();
 
       // Get all changes until we're done
-      } while ($changes->has_more);
+      } while ($changes->hasMoreItems());
 
       // Save current status
       $this->write_cursor($this->cursor);
     }
 
   private function write_entry($entry) {
-    if (sizeof($entry) < 1) {
-      // Something's wrong with this entry. Skip.
-      return;
-    }
-    $metadata = $entry[1];
-    if ($metadata->is_dir) {
+    if ($entry instanceof \Kunnu\Dropbox\Models\FolderMetadata) {
       // Don't write albums, only images.
       return;
     }
-    $dirname = File::sanitize(dirname($metadata->path));
-    $basename = File::remove_extension(basename($metadata->path));
-    $basename = File::sanitize($basename);
+    $dirname = File::sanitize(dirname($entry->path_display));
+  	$basename = basename($entry->path_display);
     $local_path = Config::read("cache_dir") . "/" . $dirname . "/" . $basename;
 
     // Check if dir already exists. Create if not.
     Directory::rmkdir($local_path);
 
     $api = Dropbox::get_instance();
-    $outfile = $this->dropbox->api->getFile($metadata->path);
-    File::write($local_path, $outfile["data"]);
+    $outfile = $api->api->download($entry->path_display);
+    File::write($local_path, $outfile->getContents());
     Image::create_thumbnail($local_path);
   }
 }

@@ -11,8 +11,24 @@ class Image {
    * See http://stackoverflow.com/questions/1855996/crop-image-in-php
    */
   public static function create_thumbnail($original_image, $thumb_dir = 'thumbs', $thumb_width = 200, $thumb_height = 200, $quality = 80) {
+	  $extension = strtolower(strrchr($original_image, '.'));
 
-    $image = imagecreatefromjpeg($original_image);
+	  switch ($extension) {
+		  case '.jpg':
+		  case '.jpeg':
+		      $image = @imagecreatefromjpeg($original_image);
+			  break;
+		  case '.gif':
+			  $image = @imagecreatefromgif($original_image);
+			  break;
+		  case '.png':
+			  $image = @imagecreatefrompng($original_image);
+			  break;
+		  default:
+			  $image = false;
+			  break;
+	  }
+
     $thumbs_path = dirname($original_image) . "/" . $thumb_dir . "/";
     @mkdir($thumbs_path); // Create thumbnail directory if not existent.
 
