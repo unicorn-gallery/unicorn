@@ -1,11 +1,6 @@
 unicorn
 =======
 
-
-WARNING: As of today, this project does not work anymore. We need to move to version 2 of the Dropbox API. See the issue [here](https://github.com/mre/unicorn/issues/2).
-
-
-
 A Dropbox gallery for your website.
 
 * Host your own your pictures on your own site
@@ -64,7 +59,7 @@ around this issue.
 Copyright
 ---------
 
-Copyright (C) 2013 Matthias Endler
+Copyright (C) Matthias Endler
 http://www.matthias-endler.de
 
 License
@@ -72,6 +67,13 @@ License
 
 GNU General Public License version 3.
 See LICENSE.txt for details.
+
+
+Thanks!
+-------
+
+* @drobee for [porting the project to the Dropbox v2 API](https://github.com/mre/unicorn/pull/3)
+
 
 Credits
 -------
@@ -84,7 +86,3 @@ Unicorn makes use of the following projects.
 * [Twig](http://twig.sensiolabs.org/) - The flexible, fast, and secure template engine for PHP
 * [Responsive Layout](http://www.dwuser.com/education/content/creating-responsive-tiled-layout-with-pure-css/) - A fine tutorial on responsive design
 * [Composer](http://getcomposer.org/) - The PHP package manager
-
-Thanks!
-
-[Slim documentation]: https://github.com/codeguy/Slim
