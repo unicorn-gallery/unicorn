@@ -25,12 +25,12 @@ class Cache
      */
     private function read_cursor()
     {
-        $content = File::read($this->cursor_file);
-        if ($content == "") {
-            // An empty file means we have no cursor yet (no chache available).
+        if (($content = File::read($this->cursor_file)) == '') {
+            // An empty file means we have no cursor yet (no cache available).
             // In this case, the API expects a null object.
             return null;
         }
+
         return $content;
     }
 
@@ -45,15 +45,9 @@ class Cache
             return false;
         }
 
-        $fmtime = filemtime($this->cursor_file);
-        $currtime = date("U");
-        $delta = $currtime - $fmtime;
+        $delta = date("U") - filemtime($this->cursor_file);
 
-        $update_after = Config::read("cache_update_after");
-        if ($delta > $update_after) {
-            return false;
-        }
-        return true;
+        return $delta <= Config::read("cache_update_after");
     }
 
     private function remove_cursor()
@@ -118,6 +112,11 @@ class Cache
         $this->write_cursor($this->cursor);
     }
 
+    /**
+     * @param $entry
+     *
+     * @throws \Kunnu\Dropbox\Exceptions\DropboxClientException
+     */
     private function write_entry($entry)
     {
         if ($entry instanceof \Kunnu\Dropbox\Models\FolderMetadata) {
@@ -131,8 +130,7 @@ class Cache
         // Check if dir already exists. Create if not.
         Directory::rmkdir($local_path);
 
-        $api = Dropbox::get_instance();
-        $outfile = $api->api->download($entry->path_display);
+        $outfile = Dropbox::get_instance()->api->download($entry->path_display);
         File::write($local_path, $outfile->getContents());
         Image::create_thumbnail($local_path);
     }
