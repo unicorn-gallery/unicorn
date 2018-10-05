@@ -1,7 +1,6 @@
 <?php
 
 namespace lib;
-use lib\Config;
 
 // Directory functions
 class Directory {
