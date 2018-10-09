@@ -11,9 +11,6 @@ Config::write("key", "xxxxxxxxxxxxxxx");
 Config::write("secret", "xxxxxxxxxxxxxxx");
 Config::write("access_token", "xxxxxxxxxxxxxxx");
 
-// Instantiate the Encrypter, passing it a 32-byte key
-Config::write("encrypter_key", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-
 // To ensure we don't attempt to obtain an access token for each user request, we must store it
 // inside a directory.
 // We also store the cursor for the delta api inside this directory.
