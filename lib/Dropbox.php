@@ -1,6 +1,6 @@
 <?php
 
-namespace lib;
+namespace Mre\Unicorn\lib;
 
 use Kunnu\Dropbox\DropboxApp;
 use Kunnu\Dropbox\Dropbox as BaseDropbox;

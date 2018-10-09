@@ -1,6 +1,6 @@
 <?php
 
-namespace lib;
+namespace Mre\Unicorn\lib;
 
 class Cache
 {
@@ -113,7 +113,7 @@ class Cache
         if ($this->cursor) {
             $changes = $this->dropbox->api->listFolderContinue($this->cursor);
         } else {
-            $changes = $this->dropbox->api->listFolder('/', array("recursive" => true));
+            $changes = $this->dropbox->api->listFolder('/', ["recursive" => true]);
         }
 
         do {

@@ -1,11 +1,11 @@
 <?php
 
-namespace models;
+namespace Mre\Unicorn\models;
 
-use lib\Directory;
-use lib\Dropbox;
-use lib\File;
-use lib\Config;
+use Mre\Unicorn\lib\Config;
+use Mre\Unicorn\lib\Directory;
+use Mre\Unicorn\lib\Dropbox;
+use Mre\Unicorn\lib\File;
 
 /**
  * Class Gallery
@@ -99,16 +99,16 @@ class Gallery
     {
         $albumName = File::decode($albumName);
         $dir = Config::read("cache_dir") . "/" . $albumName;
-        $entries = array();
+        $entries = [];
 
         foreach (Directory::validEntries($dir, true) as $entry) {
             $name = File::decode(File::removeExtension($entry));
-            $curr_entry = array(
+            $currentEntry = [
                 "name"      => $name,
                 "url"       => $this->getImagePath($albumName, $entry),
                 "thumb_url" => $this->getThumbUrl($albumName, $entry)
-            );
-            array_push($entries, $curr_entry);
+            ];
+            array_push($entries, $currentEntry);
         }
 
         return $entries;

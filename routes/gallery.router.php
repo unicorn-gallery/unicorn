@@ -1,8 +1,8 @@
 <?php
 
-use models\Gallery;
-use lib\Config;
-use lib\Cache;
+use Mre\Unicorn\lib\Cache;
+use Mre\Unicorn\lib\Config;
+use Mre\Unicorn\models\Gallery;
 
 $app->get('/', function () use ($app) {
     $gallery = new Gallery();

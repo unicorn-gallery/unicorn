@@ -21,8 +21,8 @@
         "ext-gd": "*"
     },
     "autoload":{
-        "psr-0":{
-            "": ""
+        "psr-4":{
+            "Mre\\Unicorn\\": ""
         }
     }
 }

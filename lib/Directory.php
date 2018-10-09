@@ -1,6 +1,6 @@
 <?php
 
-namespace lib;
+namespace Mre\Unicorn\lib;
 
 /**
  * Directory functions

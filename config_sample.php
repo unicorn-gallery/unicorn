@@ -1,6 +1,6 @@
 <?php
 
-use lib\Config;
+use Mre\Unicorn\lib\Config;
 
 // You can set a name for your gallery which
 // will be shown at the homepage.

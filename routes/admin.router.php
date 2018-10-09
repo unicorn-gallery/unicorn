@@ -1,7 +1,7 @@
 <?php
 
-use lib\Config;
-use lib\Cache;
+use Mre\Unicorn\lib\Cache;
+use Mre\Unicorn\lib\Config;
 
 $app->get('/admin', function () use ($app) {
     $app->render('admin.html', ["gallery_name" => Config::read("gallery_name")]);
