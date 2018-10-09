@@ -40,5 +40,3 @@ Config::write("logfile", __DIR__ . "/logs/logfile.txt");
 // Constant with absolute path to the public-facing root of the server.
 // Don't change.
 Config::write("root_path", $_SERVER['DOCUMENT_ROOT']);
-
-?>

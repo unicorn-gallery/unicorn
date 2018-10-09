@@ -2,20 +2,33 @@
 
 namespace lib;
 
-use lib\Dropbox;
-use lib\File;
-use lib\Config;
-
 class Cache
 {
-    private $cursor_file;
+    /**
+     * @var Dropbox
+     */
+    private $dropbox;
+
+    /**
+     * @var string
+     */
+    private $cursorFile;
+
+    /**
+     * @var
+     */
     private $api;
+
+    /**
+     * @var bool|null|string
+     */
+    private $cursor;
 
     public function __construct()
     {
-        $this->dropbox = Dropbox::get_instance();
-        $this->cursor_file = Config::read("storage_object_dir") . "/user.cursor";
-        $this->cursor = $this->read_cursor();
+        $this->dropbox = Dropbox::getInstance();
+        $this->cursorFile = Config::read("storage_object_dir") . "/user.cursor";
+        $this->cursor = $this->readCursor();
     }
 
     /**
@@ -23,9 +36,9 @@ class Cache
      * in form of a Dropbox cursor for the delta API
      * (see Dropbox API documentation for more info).
      */
-    private function read_cursor()
+    private function readCursor()
     {
-        if (($content = File::read($this->cursor_file)) == '') {
+        if (($content = File::read($this->cursorFile)) == '') {
             // An empty file means we have no cursor yet (no cache available).
             // In this case, the API expects a null object.
             return null;
@@ -34,28 +47,31 @@ class Cache
         return $content;
     }
 
-    private function write_cursor($cursor)
+    private function writeCursor($cursor)
     {
-        File::write($this->cursor_file, $cursor);
+        File::write($this->cursorFile, $cursor);
     }
 
-    public function is_up_to_date()
+    /**
+     * @return bool
+     */
+    public function isUpToDate()
     {
-        if (! file_exists($this->cursor_file)) {
+        if (!file_exists($this->cursorFile)) {
             return false;
         }
 
-        $delta = date("U") - filemtime($this->cursor_file);
+        $delta = date("U") - filemtime($this->cursorFile);
 
         return $delta <= Config::read("cache_update_after");
     }
 
-    private function remove_cursor()
+    private function removeCursor()
     {
-        File::remove($this->cursor_file);
+        File::remove($this->cursorFile);
     }
 
-    public function clear_cache_dir()
+    public function clearCacheDir()
     {
         $cache_dir = Config::read("cache_dir");
         // Clear cache
@@ -68,26 +84,29 @@ class Cache
 
     public function clear()
     {
-        $this->remove_cursor();
-        $this->clear_cache_dir();
+        $this->removeCursor();
+        $this->clearCacheDir();
     }
 
     /**
      * Use the Dropbox delta API to cache the gallery.
      * Every image will be stored inside the cache directory
      * This increases loading speed significantly.
+     *
+     * @param bool $forceUpdate
+     * @param bool $purge
+     * @throws \Kunnu\Dropbox\Exceptions\DropboxClientException
      */
-    public function refresh($force_update = false, $purge = false)
+    public function refresh($forceUpdate = false, $purge = false)
     {
-
         // Do we need to check for updates?
-        /*if ($this->is_up_to_date() && !$force_update) {
+        /*if ($this->isUpToDate() && !$forceUpdate) {
           return;
         }*/
 
         if ($purge) {
             $this->clear();
-            $this->cursor = $this->read_cursor();
+            $this->cursor = $this->readCursor();
         }
 
         // Get changes
@@ -100,7 +119,7 @@ class Cache
         do {
             $entries = $changes->getItems();
             foreach ($entries as $entry) {
-                $this->write_entry($entry);
+                $this->writeEntry($entry);
             }
             // Refresh cursor
             $this->cursor = $changes->getCursor();
@@ -109,7 +128,7 @@ class Cache
         } while ($changes->hasMoreItems());
 
         // Save current status
-        $this->write_cursor($this->cursor);
+        $this->writeCursor($this->cursor);
     }
 
     /**
@@ -117,7 +136,7 @@ class Cache
      *
      * @throws \Kunnu\Dropbox\Exceptions\DropboxClientException
      */
-    private function write_entry($entry)
+    private function writeEntry($entry)
     {
         if ($entry instanceof \Kunnu\Dropbox\Models\FolderMetadata) {
             // Don't write albums, only images.
@@ -125,14 +144,14 @@ class Cache
         }
         $dirname = File::sanitize(dirname($entry->path_display));
         $basename = basename($entry->path_display);
-        $local_path = Config::read("cache_dir") . "/" . $dirname . "/" . $basename;
+        $localPath = Config::read("cache_dir") . "/" . $dirname . "/" . $basename;
 
         // Check if dir already exists. Create if not.
-        Directory::rmkdir($local_path);
+        Directory::rmkdir($localPath);
 
-        $outfile = Dropbox::get_instance()->api->download($entry->path_display);
-        File::write($local_path, $outfile->getContents());
-        Image::create_thumbnail($local_path);
+        $outfile = Dropbox::getInstance()->api->download($entry->path_display);
+        File::write($localPath, $outfile->getContents());
+        Image::createThumbnail($localPath);
     }
 }
 

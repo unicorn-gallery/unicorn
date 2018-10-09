@@ -2,15 +2,31 @@
 
 namespace lib;
 
-// Configuration Class
-class Config {
-    static $confArray;
+/**
+ * Configuration Class
+ */
+class Config
+{
+    /**
+     * @var array
+     */
+    private static $confArray;
 
-    public static function read($name) {
+    /**
+     * @param string $name
+     * @return mixed
+     */
+    public static function read($name)
+    {
         return self::$confArray[$name];
     }
 
-    public static function write($name, $value) {
+    /**
+     * @param $name
+     * @param $value
+     */
+    public static function write($name, $value)
+    {
         self::$confArray[$name] = $value;
     }
 }
