@@ -1,6 +1,6 @@
 <?php
 
-use lib\Config;
+use Mre\Unicorn\lib\Config;
 
 // You can set a name for your gallery which
 // will be shown at the homepage.
@@ -37,5 +37,3 @@ Config::write("logfile", __DIR__ . "/logs/logfile.txt");
 // Constant with absolute path to the public-facing root of the server.
 // Don't change.
 Config::write("root_path", $_SERVER['DOCUMENT_ROOT']);
-
-?>

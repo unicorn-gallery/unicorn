@@ -1,25 +1,41 @@
 <?php
 
-namespace models;
+namespace Mre\Unicorn\models;
 
-use lib\Directory;
-use lib\Dropbox;
-use lib\File;
-use lib\Config;
+use Mre\Unicorn\lib\Config;
+use Mre\Unicorn\lib\Directory;
+use Mre\Unicorn\lib\Dropbox;
+use Mre\Unicorn\lib\File;
 
+/**
+ * Class Gallery
+ */
 class Gallery
 {
+    /**
+     * @var string
+     */
     private static $thumbs_dir = "thumbs";
+
+    /**
+     * @var Dropbox
+     */
     protected $dropbox;
 
-    function __construct()
+    /**
+     * Gallery constructor.
+     */
+    public function __construct()
     {
-        $this->dropbox = Dropbox::get_instance();
+        $this->dropbox = Dropbox::getInstance();
     }
 
-    private function get_cache_path()
+    /**
+     * @return bool|string
+     */
+    private function getCachePath()
     {
-        return Directory::server_path(Config::read("cache_dir"));
+        return Directory::serverPath(Config::read("cache_dir"));
     }
 
     /**
@@ -29,9 +45,9 @@ class Gallery
      *
      * @return string
      */
-    private function get_album_path($album)
+    private function getAlbumPath($album)
     {
-        return $this->get_cache_path() . "/" . $album;
+        return $this->getCachePath() . "/" . $album;
     }
 
     /**
@@ -41,55 +57,58 @@ class Gallery
      *
      * @return string string
      */
-    private function get_album_url($album)
+    private function getAlbumUrl($album)
     {
-        return Directory::page_url() . "/" . File::encode($album);
+        return Directory::pageUrl() . "/" . File::encode($album);
     }
 
-    private function get_image_path($album, $image)
+    private function getImagePath($album, $image)
     {
-        return $this->get_album_path($album) . "/" . $image;
+        return $this->getAlbumPath($album) . "/" . $image;
     }
 
     /**
      * Return the public path to an image thumbnail
+     * @param string $album
+     * @param bool $img
+     * @return bool|string
      */
-    private function get_thumb_url($album, $img = false)
+    private function getThumbUrl($album, $img = false)
     {
-        if (! $img) {
+        if (!$img) {
             // Get the absolute path to the thumbnail
             $dir = Config::read("cache_dir") . "/" . $album . "/" . self::$thumbs_dir;
-            $thumbs = Directory::valid_entries($dir);
+            $thumbs = Directory::validEntries($dir);
             if (empty($thumbs)) {
                 return false;
             }
             $img = $thumbs[0];
         }
 
-        return $this->get_album_path($album) . "/" . self::$thumbs_dir . "/" . $img;
+        return $this->getAlbumPath($album) . "/" . self::$thumbs_dir . "/" . $img;
     }
 
     /**
      * Get an album
      *
-     * @param string $album_name
+     * @param string $albumName
      *
      * @return array
      */
-    public function get_album($album_name)
+    public function getAlbum($albumName)
     {
-        $album_name = File::decode($album_name);
-        $dir = Config::read("cache_dir") . "/" . $album_name;
-        $entries = array();
+        $albumName = File::decode($albumName);
+        $dir = Config::read("cache_dir") . "/" . $albumName;
+        $entries = [];
 
-        foreach (Directory::valid_entries($dir, true) as $entry) {
-            $name = File::decode(File::remove_extension($entry));
-            $curr_entry = array(
+        foreach (Directory::validEntries($dir, true) as $entry) {
+            $name = File::decode(File::removeExtension($entry));
+            $currentEntry = [
                 "name"      => $name,
-                "url"       => $this->get_image_path($album_name, $entry),
-                "thumb_url" => $this->get_thumb_url($album_name, $entry)
-            );
-            array_push($entries, $curr_entry);
+                "url"       => $this->getImagePath($albumName, $entry),
+                "thumb_url" => $this->getThumbUrl($albumName, $entry)
+            ];
+            array_push($entries, $currentEntry);
         }
 
         return $entries;
@@ -98,20 +117,20 @@ class Gallery
     /**
      * Get an array of album names and a thumbnail url for each album
      */
-    public function get_albums()
+    public function getAlbums()
     {
-        $entries = array();
+        $entries = [];
 
-        foreach (Directory::valid_entries(Config::read("cache_dir")) as $entry) {
-            if (! ($thumb_url = $this->get_thumb_url($entry))) {
+        foreach (Directory::validEntries(Config::read("cache_dir")) as $entry) {
+            if (!($thumbUrl = $this->getThumbUrl($entry))) {
                 continue;
             }
 
-            array_push($entries, array(
+            array_push($entries, [
                 "name"      => File::decode($entry),
-                "url"       => $this->get_album_url($entry),
-                "thumb_url" => $thumb_url
-            ));
+                "url"       => $this->getAlbumUrl($entry),
+                "thumb_url" => $thumbUrl
+            ]);
         }
 
         return $entries;
