@@ -1,30 +1,40 @@
 <?php
 
-namespace lib;
+namespace Mre\Unicorn\lib;
 
 use Kunnu\Dropbox\DropboxApp;
 use Kunnu\Dropbox\Dropbox as BaseDropbox;
 
 class Dropbox
 {
+    /**
+     * Fixed identifier for single-user system OR authenticated user ID
+     */
+    const CLIENT_ID = 1;
+
+    /**
+     * @var Dropbox
+     */
     private static $instance;
+
+    /**
+     * @var BaseDropbox
+     */
     public $api;
 
     private function __construct()
     {
-        $identifier = 1; // Fixed identifier for single-user system OR authenticated user ID
-
         $this->api = new BaseDropbox(
-            new DropboxApp($identifier, Config::read('secret'), Config::read('access_token'))
+            new DropboxApp(self::CLIENT_ID, Config::read('secret'), Config::read('access_token'))
         );
     }
 
     /**
-     * @return static
+     * @return Dropbox
      */
-    public static function get_instance()
+    public static function getInstance()
     {
-        if (! static::$instance) {
+        if (!static::$instance) {
             static::$instance = new static();
         }
 

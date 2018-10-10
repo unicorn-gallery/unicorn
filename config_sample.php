@@ -1,6 +1,6 @@
 <?php
 
-use lib\Config;
+use Mre\Unicorn\lib\Config;
 
 // You can set a name for your gallery which
 // will be shown at the homepage.
@@ -10,9 +10,6 @@ Config::write("gallery_name", "unicorn gallery");
 Config::write("key", "xxxxxxxxxxxxxxx");
 Config::write("secret", "xxxxxxxxxxxxxxx");
 Config::write("access_token", "xxxxxxxxxxxxxxx");
-
-// Instantiate the Encrypter, passing it a 32-byte key
-Config::write("encrypter_key", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
 
 // To ensure we don't attempt to obtain an access token for each user request, we must store it
 // inside a directory.
@@ -40,5 +37,3 @@ Config::write("logfile", __DIR__ . "/logs/logfile.txt");
 // Constant with absolute path to the public-facing root of the server.
 // Don't change.
 Config::write("root_path", $_SERVER['DOCUMENT_ROOT']);
-
-?>
