@@ -16,8 +16,8 @@ $app = new \Slim\Slim([
 // Create monolog logger and store logger in container as singleton
 // (Singleton resources retrieve the same log resource definition each time)
 $app->container->singleton('log', function () {
-    $log = new \Monolog\Logger('slim-skeleton');
-    $log->pushHandler(new \Monolog\Handler\StreamHandler('logs/app.log', \Psr\Log\LogLevel::DEBUG));
+    $log = new \Monolog\Logger('unicorn');
+    $log->pushHandler(new \Monolog\Handler\StreamHandler('php://stderr', \Psr\Log\LogLevel::DEBUG));
     return $log;
 });
 
