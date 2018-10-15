@@ -142,8 +142,8 @@ class Cache
             // Don't write albums, only images.
             return;
         }
+
         $dirname = File::sanitize(dirname($entry->path_display));
-        var_dump($entry->path_display);
         $basename = basename($entry->path_display);
         $localPath = Config::read("cache_dir") . "/" . $dirname . "/" . $basename;
 

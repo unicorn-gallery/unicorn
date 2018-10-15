@@ -13,7 +13,7 @@ $app->get('/', function () use ($app) {
     $app->render("index.html", ["title" => $title, "entries" => $albums]);
     $cache = new Cache();
     $cache->refresh();
-});
+})->setName('albums');
 
 $app->get('/:album', function ($album) use ($app) {
     $router = $app->container->get('router');

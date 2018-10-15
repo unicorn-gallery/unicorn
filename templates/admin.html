@@ -3,7 +3,7 @@
 {% block content%}
     {% if refreshed is defined %}
       <p>
-      We've refreshed the gallery. <a href="/">Enjoy!</a>
+      We've refreshed the gallery. <a href="{{ urlFor('albums') }}">Enjoy!</a>
       </p>
     {% else %}
       <p>

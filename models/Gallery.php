@@ -71,6 +71,13 @@ class Gallery
         return $this->router->urlFor("album", ["album" => File::encode($album)]);
     }
 
+    /**
+     * Get image path
+     *
+     * @param string $album
+     * @param string $image
+     * @return string
+     */
     private function getImagePath($album, $image)
     {
         return $this->getAlbumPath($album) . "/" . $image;
@@ -106,7 +113,6 @@ class Gallery
      */
     public function getAlbum($albumName)
     {
-        $albumName = File::decode($albumName);
         $dir = Config::read("cache_dir") . "/" . $albumName;
         $entries = [];
 

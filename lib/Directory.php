@@ -62,14 +62,6 @@ class Directory
     }
 
     /**
-     * @return bool|string
-     */
-    public static function pageUrl()
-    {
-        return substr($_SERVER["SCRIPT_NAME"], strrpos($_SERVER["SCRIPT_NAME"], "/") + 1);
-    }
-
-    /**
      * @param string $dir
      * @param bool $excludeDirs
      * @param array $filters
