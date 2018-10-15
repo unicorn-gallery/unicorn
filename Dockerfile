@@ -15,7 +15,9 @@ RUN curl -sS https://getcomposer.org/installer | php \
     && mv composer.phar /usr/local/bin/ \
     && ln -s /usr/local/bin/composer.phar /usr/local/bin/composer
 
-COPY . /app
+COPY composer.json composer.lock /app/
 WORKDIR /app
 RUN chown -R www-data:www-data /app
-RUN composer install --no-interaction -o
+
+ENV COMPOSER_ALLOW_SUPERUSER 1
+CMD bash -c "composer install && php-fpm"\

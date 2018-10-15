@@ -11,5 +11,4 @@ nginx:
 php:
     build: ./
     volumes:
-       - ./:/app
-       - /app/vendor
+       - .:/app

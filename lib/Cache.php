@@ -73,13 +73,13 @@ class Cache
 
     public function clearCacheDir()
     {
-        $cache_dir = Config::read("cache_dir");
+        $cacheDir = Config::read("cache_dir");
         // Clear cache
-        if (! isset($cache_dir)) {
+        if (!isset($cacheDir)) {
             return;
         }
-        Directory::rrmdir($cache_dir);
-        mkdir($cache_dir);
+        Directory::rrmdir($cacheDir);
+        mkdir($cacheDir);
     }
 
     public function clear()
@@ -143,6 +143,7 @@ class Cache
             return;
         }
         $dirname = File::sanitize(dirname($entry->path_display));
+        var_dump($entry->path_display);
         $basename = basename($entry->path_display);
         $localPath = Config::read("cache_dir") . "/" . $dirname . "/" . $basename;
 
