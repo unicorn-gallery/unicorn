@@ -12,24 +12,27 @@ Setup
 -----
 
 1. [Get unicorn](https://github.com/mre/unicorn/archive/master.zip).
-
 2. Due to Dropbox restrictions I'm not allowed to share my application
    key. [Create a new Dropbox app](https://www.dropbox.com/developers/apps/create)
    with the settings in the screenshot and put the keys into `config_sample.php`.
    Afterwards rename `config_sample.php` to `config.php` to activate it.
    ![Dropbox App settings](https://raw.github.com/mre/unicorn/master/assets/img/create_app.png)
-
 3. If you don't have it already, [install composer](https://getcomposer.org/doc/00-intro.md). After that run `composer install` inside the unicorn folder to install all dependencies.
-
 4. Upload the whole unicorn directory to your webserver.
-
 5. Open your browser, type `www.example.com/path/to/unicorn` and follow the instructions.
-
 6. Put some pictures into `Dropbox/Apps/<your_app_name>`. Each directory is a gallery.
    Now go ahead and enjoy your gallery.
 
 Pro tip: You can also enable pretty URLs.
 See the [Slim documentation] on how to enable them for your server.
+
+### With docker
+
+1. Open docker-compose.yml in your favorite editor
+2. Set `UNICORN_KEY`, `UNICORN_SECRET` and `UNICORN_ACCESS_TOKEN` to
+   the values shown in your dropbox app's settings page.
+3. (Optional) Expose a different port than 8080
+4. Run `docker-compose up` to start run the application
 
 Customization / Themes
 ----------------------

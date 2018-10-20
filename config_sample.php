@@ -7,9 +7,9 @@ use Mre\Unicorn\lib\Config;
 Config::write("gallery_name", "unicorn gallery");
 
 // Set your consumer key, secret and callback URL
-Config::write("key", "xxxxxxxxxxxxxxx");
-Config::write("secret", "xxxxxxxxxxxxxxx");
-Config::write("access_token", "xxxxxxxxxxxxxxx");
+Config::write("key", getenv('UNICORN_KEY') ? getenv('UNICORN_KEY') : "xxxxxxxxxxxxxxx");
+Config::write("secret", getenv('UNICORN_SECRET') ? getenv('UNICORN_SECRET') : "xxxxxxxxxxxxxxx");
+Config::write("access_token", getenv('UNICORN_ACCESS_TOKEN') ? getenv('UNICORN_ACCESS_TOKEN') : "xxxxxxxxxxxxxxx");
 
 // To ensure we don't attempt to obtain an access token for each user request, we must store it
 // inside a directory.

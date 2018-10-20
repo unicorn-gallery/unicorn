@@ -1,0 +1,19 @@
+version: "3.1"
+services:
+
+  webserver:
+    image: nginx:alpine
+    working_dir: /application
+    volumes:
+      - .:/application
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "8080:80"
+
+  php-fpm:
+    image: florianorben/unicorn
+    working_dir: /application
+    environment:
+      - UNICORN_KEY=xxxxxxxxxxxxxxx
+      - UNICORN_SECRET=xxxxxxxxxxxxxxx
+      - UNICORN_ACCESS_TOKEN=xxxxxxxxxxxxxxx
