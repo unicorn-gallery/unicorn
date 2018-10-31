@@ -40,6 +40,13 @@ Now go ahead and enjoy your gallery.
 Pro tip: You can also enable pretty URLs.  
 See the [Slim documentation] on how to enable them for your server.
 
+### With docker
+1. Open docker-compose.yml in your favorite editor
+2. Set `UNICORN_KEY`, `UNICORN_SECRET` and `UNICORN_ACCESS_TOKEN` to
+   the values shown in your dropbox app's settings page.
+3. (Optional) Expose a different port than 8080
+4. Run `docker-compose up` to start run the application
+
 ## Customization / Themes
 
 The gallery uses Twig and is fully customizable via HTML and CSS.

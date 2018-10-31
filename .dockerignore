@@ -1,0 +1,8 @@
+cache/*
+logs/*
+.idea
+.git
+docker
+data/user.cursor
+README.md
+docker-compose.yml

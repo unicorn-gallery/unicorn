@@ -1,14 +1,22 @@
-nginx:
-    image: nginx:latest
-    ports:
-        - "8080:80"
-    volumes:
-        - .:/app
-        - ./site.conf:/etc/nginx/conf.d/default.conf
-    links:
-        - php
+version: "3.1"
 
-php:
-    build: ./
-    volumes:
-       - .:/app
+services:
+    nginx:
+        image: nginx:latest
+        ports:
+            - "8080:80"
+        volumes:
+            - .:/app
+            - ./site.conf:/etc/nginx/conf.d/default.conf
+        links:
+            - php
+
+    php:
+        build: ./
+        volumes:
+           - .:/app
+        environment:
+           - UNICORN_KEY=sqox8nxn1xrmxq0
+           - UNICORN_SECRET=4q2g7hamcqsy16v
+           - UNICORN_ACCESS_TOKEN=DjYFg_oOXksAAAAAAAAYIrEbAuoa2446jL3Yt__b4AlYyIJ5EuMKWsRxhCfImLrg
+
