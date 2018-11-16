@@ -4,7 +4,6 @@
 /cache/*
 !/cache/.gitignore
 .DS_STORE
-composer.lock
 config.php
 !lib/Config.php
 /data/*

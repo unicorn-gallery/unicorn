@@ -6,6 +6,7 @@ use Mre\Unicorn\lib\Config;
 use Mre\Unicorn\lib\Directory;
 use Mre\Unicorn\lib\Dropbox;
 use Mre\Unicorn\lib\File;
+use Slim\Router;
 
 /**
  * Class Gallery
@@ -15,7 +16,7 @@ class Gallery
     /**
      * @var string
      */
-    private static $thumbs_dir = "thumbs";
+    private static $thumbsDir = "thumbs";
 
     /**
      * @var Dropbox
@@ -23,11 +24,19 @@ class Gallery
     protected $dropbox;
 
     /**
-     * Gallery constructor.
+     * @var Router
      */
-    public function __construct()
+    protected $router;
+
+    /**
+     * Gallery constructor.
+     *
+     * @param Router $router
+     */
+    public function __construct(Router $router)
     {
         $this->dropbox = Dropbox::getInstance();
+        $this->router = $router;
     }
 
     /**
@@ -59,9 +68,16 @@ class Gallery
      */
     private function getAlbumUrl($album)
     {
-        return Directory::pageUrl() . "/" . File::encode($album);
+        return $this->router->urlFor("album", ["album" => File::encode($album)]);
     }
 
+    /**
+     * Get image path
+     *
+     * @param string $album
+     * @param string $image
+     * @return string
+     */
     private function getImagePath($album, $image)
     {
         return $this->getAlbumPath($album) . "/" . $image;
@@ -77,7 +93,7 @@ class Gallery
     {
         if (!$img) {
             // Get the absolute path to the thumbnail
-            $dir = Config::read("cache_dir") . "/" . $album . "/" . self::$thumbs_dir;
+            $dir = Config::read("cache_dir") . "/" . $album . "/" . self::$thumbsDir;
             $thumbs = Directory::validEntries($dir);
             if (empty($thumbs)) {
                 return false;
@@ -85,7 +101,7 @@ class Gallery
             $img = $thumbs[0];
         }
 
-        return $this->getAlbumPath($album) . "/" . self::$thumbs_dir . "/" . $img;
+        return $this->getAlbumPath($album) . "/" . self::$thumbsDir . "/" . $img;
     }
 
     /**
@@ -97,7 +113,6 @@ class Gallery
      */
     public function getAlbum($albumName)
     {
-        $albumName = File::decode($albumName);
         $dir = Config::read("cache_dir") . "/" . $albumName;
         $entries = [];
 
