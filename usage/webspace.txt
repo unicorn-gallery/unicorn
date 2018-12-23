@@ -1,0 +1,3 @@
+belegter Speicherplatz:
+htdocs	: 22949
+chroot	: 33769

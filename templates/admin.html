@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content%}
+    {% if refreshed is defined %}
+      <p>
+      We've refreshed the gallery. <a href="{{ urlFor('albums') }}">Enjoy!</a>
+      </p>
+    {% else %}
+      <p>
+        When you click on the big button below, all new gallery pictures will be fetched from Dropbox.<br />
+        Do this every time you add pictures to your gallery. That's it.
+      </p>
+      <form action = "" method = "post">
+        <div class="xlarge primary btn">
+            <button type="submit" name="refresh">
+                <i class="icon-arrows-ccw"></i> Refresh Gallery
+            </button>
+        </div>
+      </form>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block head_includes %}
+  <link rel="stylesheet" href="../assets/css/swipebox.css">
+  <!-- Enable media queries for old IE -->
+  <!--[if lt IE 9]>
+	<script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+  <![endif]-->
+
+  <script src="../assets/js/ios-orientationchange-fix.js"></script>
+  <script src="../assets/js/jquery-2.0.3.min.js"></script>
+  <script src="../assets/js/jquery.swipebox.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function($) {
+        $(".swipebox").swipebox({
+          hideBarsDelay : 0, // 0 to always show caption and action bar
+		  loopAtEnd: false,
+        });
+      });
+  </script>
+{% endblock %}
+
+
+{% block content %}
+  {% for entry in entries %}
+    <div class="box">
+      <div class="boxInner imgBorder">
+        <a href="{{ entry.url }}" title={{ entry.name }}
+          {% if lightbox is defined %}
+            class="swipebox"
+          {% endif %}
+          >
+          <img src="{{ entry.thumb_url }}" alt="{{ entry.name }}"/>
+        </a>
+        <div class="titleBox">{{ entry.name }}</div>
+      </div>
+    </div>
+  {% endfor %}
+{% endblock %}

@@ -1,0 +1,13 @@
+/vendor/
+/logs/*
+!/logs/README.md
+/cache/*
+!/cache/.gitignore
+.DS_STORE
+config.php
+!lib/Config.php
+/data/*
+!/data/.gitignore
+/tokens/*
+/.idea
+rotate.php

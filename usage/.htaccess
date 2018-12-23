@@ -1,0 +1,5 @@
+AuthUserFile /www/htdocs/w018bf71/usage/.htpasswd
+AuthGroupFile /dev/null
+AuthName 'ByPassword'
+AuthType Basic
+require valid-user
