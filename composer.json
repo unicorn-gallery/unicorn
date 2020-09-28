@@ -16,7 +16,7 @@
         "monolog/monolog": "~1.6",
         "slim/slim": "~4.3",
         "slim/views": "0.*",
-        "twig/twig": "~1.13",
+        "twig/twig": "~2.12",
         "kunalvarma05/dropbox-php-sdk": "^0.2.1",
         "ext-gd": "*"
     },
