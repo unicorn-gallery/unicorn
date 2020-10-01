@@ -1,4 +1,4 @@
-# unicorn
+# Unicorn - An amazing gallery !
 
 A Dropbox gallery for your website.
 
